@@ -1,0 +1,29 @@
+package main
+
+import (
+	_ "github.com/hullerob/go.imagefile"
+	"image"
+	"image/png"
+	"os"
+)
+
+func main() {
+	if len(os.Args) != 1 {
+		usage()
+		os.Exit(1)
+	}
+	m, _, err := image.Decode(os.Stdin)
+	if err != nil {
+		os.Stderr.WriteString(err.Error() + "\n")
+		os.Exit(1)
+	}
+	err = png.Encode(os.Stdout, m)
+	if err != nil {
+		os.Stderr.WriteString(err.Error() + "\n")
+		os.Exit(1)
+	}
+}
+
+func usage() {
+	os.Stderr.WriteString("usage: if2png < pic.if > pic.png\n")
+}
