@@ -25,7 +25,7 @@ func Decode(r io.Reader) (image.Image, error) {
 	size := 4 * cfg.Width * cfg.Height
 	buff := make([]uint8, size)
 	_, err = io.ReadFull(r, buff)
-	img := &image.NRGBA{
+	img := &image.RGBA{
 		Pix:    buff,
 		Stride: cfg.Width * 4,
 		Rect: image.Rectangle{
@@ -59,7 +59,7 @@ func Encode(w io.Writer, m image.Image) error {
 		return err
 	}
 	switch img := m.(type) {
-	case *image.NRGBA:
+	case *image.RGBA:
 		_, err = w.Write(img.Pix)
 	default:
 		pix := toRGBA(img)
