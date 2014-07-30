@@ -1,4 +1,4 @@
-// © 2014, Robert Hülle
+// See LICENSE file for copyright and license details.
 
 package imagefile
 
