@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/hullerob/go.imagefile"
 	"image"
+	_ "image/gif"
+	_ "image/jpeg"
 	_ "image/png"
 	"os"
 )
