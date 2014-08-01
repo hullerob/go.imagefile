@@ -60,7 +60,14 @@ func Encode(w io.Writer, m image.Image) error {
 	}
 	switch img := m.(type) {
 	case *image.NRGBA:
-		_, err = w.Write(img.Pix)
+		pix := img.Pix
+		for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
+			_, err = w.Write(pix[:width*4])
+			if err != nil {
+				return err
+			}
+			pix = pix[img.Stride:]
+		}
 	default:
 		pix := toNRGBA(img)
 		_, err = w.Write(pix)

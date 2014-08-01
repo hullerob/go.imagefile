@@ -51,6 +51,23 @@ func TestEncodePremultiplied(t *testing.T) {
 	assert.True(t, testAlmostEqual(2, 0x66, int(w.Bytes()[20])), "encoded image differs too much")
 }
 
+func TestEncodeSubImage(t *testing.T) {
+	img := image.NewNRGBA(image.Rect(0, 0, 4, 4))
+	for y := 0; y < 4; y++ {
+		for x := 0; x < 4; x++ {
+			c := uint8(y*4*4 + x*4)
+			img.SetNRGBA(x, y, color.NRGBA{c, c + 1, c + 2, c + 3})
+		}
+	}
+	w := new(bytes.Buffer)
+	err := Encode(w, img.SubImage(image.Rect(1, 1, 3, 3)))
+	assert.Nil(t, err, "err is not nil")
+	assert.Equal(t, []byte("imagefile\000\000\000\002\000\000\000\002"+
+		"\x14\x15\x16\x17\x18\x19\x1a\x1b"+
+		"\x24\x25\x26\x27\x28\x29\x2a\x2b"),
+		w.Bytes(), "encoded image differs")
+}
+
 func testAlmostEqual(diff, expected, got int) bool {
 	adiff := expected - got
 	if adiff < 0 {
