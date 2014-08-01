@@ -22,17 +22,8 @@ func Decode(r io.Reader) (image.Image, error) {
 	if err != nil {
 		return nil, err
 	}
-	size := 4 * cfg.Width * cfg.Height
-	buff := make([]uint8, size)
-	_, err = io.ReadFull(r, buff)
-	img := &image.NRGBA{
-		Pix:    buff,
-		Stride: cfg.Width * 4,
-		Rect: image.Rectangle{
-			Min: image.Point{0, 0},
-			Max: image.Point{cfg.Width, cfg.Height},
-		},
-	}
+	img := image.NewNRGBA(image.Rect(0, 0, cfg.Width, cfg.Height))
+	_, err = io.ReadFull(r, img.Pix)
 	return img, err
 }
 
@@ -50,8 +41,8 @@ func DecodeConfig(r io.Reader) (image.Config, error) {
 func Encode(w io.Writer, m image.Image) error {
 	header := []uint8(imagefileHeader)
 	be := binary.BigEndian
-	width := m.Bounds().Max.X - m.Bounds().Min.X
-	height := m.Bounds().Max.Y - m.Bounds().Min.Y
+	width := m.Bounds().Dx()
+	height := m.Bounds().Dy()
 	be.PutUint32(header[9:13], uint32(width))
 	be.PutUint32(header[13:17], uint32(height))
 	_, err := w.Write(header)
@@ -69,27 +60,26 @@ func Encode(w io.Writer, m image.Image) error {
 			pix = pix[img.Stride:]
 		}
 	default:
-		pix := toNRGBA(img)
-		_, err = w.Write(pix)
+		pix := make([]uint8, width*4)
+		for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
+			encodeLine(pix, img, y)
+			_, err = w.Write(pix)
+			if err != nil {
+				return err
+			}
+		}
 	}
 	return err
 }
 
-func toNRGBA(m image.Image) []uint8 {
-	width := m.Bounds().Max.X - m.Bounds().Min.X
-	height := m.Bounds().Max.Y - m.Bounds().Min.Y
-	size := 4 * width * height
-	pix := make([]uint8, size)
+func encodeLine(pix []uint8, m image.Image, y int) {
 	pos := 0
-	for y := m.Bounds().Min.Y; y < m.Bounds().Max.Y; y++ {
-		for x := m.Bounds().Min.X; x < m.Bounds().Max.X; x++ {
-			c := color.NRGBAModel.Convert(m.At(x, y)).(color.NRGBA)
-			pix[pos] = c.R
-			pix[pos+1] = c.G
-			pix[pos+2] = c.B
-			pix[pos+3] = c.A
-			pos += 4
-		}
+	for x := m.Bounds().Min.X; x < m.Bounds().Max.X; x++ {
+		c := color.NRGBAModel.Convert(m.At(x, y)).(color.NRGBA)
+		pix[pos] = c.R
+		pix[pos+1] = c.G
+		pix[pos+2] = c.B
+		pix[pos+3] = c.A
+		pos += 4
 	}
-	return pix
 }
