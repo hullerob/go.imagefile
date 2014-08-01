@@ -25,7 +25,7 @@ func Decode(r io.Reader) (image.Image, error) {
 	size := 4 * cfg.Width * cfg.Height
 	buff := make([]uint8, size)
 	_, err = io.ReadFull(r, buff)
-	img := &image.RGBA{
+	img := &image.NRGBA{
 		Pix:    buff,
 		Stride: cfg.Width * 4,
 		Rect: image.Rectangle{
@@ -59,16 +59,16 @@ func Encode(w io.Writer, m image.Image) error {
 		return err
 	}
 	switch img := m.(type) {
-	case *image.RGBA:
+	case *image.NRGBA:
 		_, err = w.Write(img.Pix)
 	default:
-		pix := toRGBA(img)
+		pix := toNRGBA(img)
 		_, err = w.Write(pix)
 	}
 	return err
 }
 
-func toRGBA(m image.Image) []uint8 {
+func toNRGBA(m image.Image) []uint8 {
 	width := m.Bounds().Max.X - m.Bounds().Min.X
 	height := m.Bounds().Max.Y - m.Bounds().Min.Y
 	size := 4 * width * height
@@ -76,11 +76,11 @@ func toRGBA(m image.Image) []uint8 {
 	pos := 0
 	for y := m.Bounds().Min.Y; y < m.Bounds().Max.Y; y++ {
 		for x := m.Bounds().Min.X; x < m.Bounds().Max.X; x++ {
-			r, g, b, a := m.At(x, y).RGBA()
-			pix[pos] = uint8(r >> 8)
-			pix[pos+1] = uint8(g >> 8)
-			pix[pos+2] = uint8(b >> 8)
-			pix[pos+3] = uint8(a >> 8)
+			c := color.NRGBAModel.Convert(m.At(x, y)).(color.NRGBA)
+			pix[pos] = c.R
+			pix[pos+1] = c.G
+			pix[pos+2] = c.B
+			pix[pos+3] = c.A
 			pos += 4
 		}
 	}
