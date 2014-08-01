@@ -4,7 +4,7 @@ Go.Image File
 About
 -----
 
-This is Go implementation of `http://git.2f30.org/imagefile/`.
+This is Go implementation of [imagefile format](http://git.2f30.org/imagefile/).
 
 It uses Go's `image` interface, similar to `image/png`.
 
