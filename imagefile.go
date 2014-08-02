@@ -31,7 +31,7 @@ func DecodeConfig(r io.Reader) (image.Config, error) {
 	var cfg image.Config
 	buff := make([]uint8, 17)
 	_, err := io.ReadFull(r, buff)
-	cfg.ColorModel = color.RGBAModel
+	cfg.ColorModel = color.NRGBAModel
 	be := binary.BigEndian
 	cfg.Width = int(be.Uint32(buff[9:13]))
 	cfg.Height = int(be.Uint32(buff[13:17]))
