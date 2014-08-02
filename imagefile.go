@@ -1,5 +1,8 @@
 // See LICENSE file for copyright and license details.
 
+// Package imagefile implements a imagefile decoder and encoder.
+//
+// The imagefile specification can be found at http://git.2f30.org/imagefile/
 package imagefile
 
 import (
@@ -17,6 +20,7 @@ func init() {
 	image.RegisterFormat("imagefile", imagefileHeader, Decode, DecodeConfig)
 }
 
+// Decode reads an imagefile from r and returns it as image.NRGBA.
 func Decode(r io.Reader) (image.Image, error) {
 	cfg, err := DecodeConfig(r)
 	if err != nil {
@@ -27,6 +31,7 @@ func Decode(r io.Reader) (image.Image, error) {
 	return img, err
 }
 
+// DecodeConfig returns dimensions of imagefile image.
 func DecodeConfig(r io.Reader) (image.Config, error) {
 	var cfg image.Config
 	buff := make([]uint8, 17)
@@ -38,6 +43,8 @@ func DecodeConfig(r io.Reader) (image.Config, error) {
 	return cfg, err
 }
 
+// Encode writes m to w in imagefile format. If m is not image.NRGBA,
+// it will be converted lossily.
 func Encode(w io.Writer, m image.Image) error {
 	header := []uint8(imagefileHeader)
 	be := binary.BigEndian
