@@ -1,6 +1,9 @@
 package main
 
 import (
+	_ "code.google.com/p/go.image/bmp"
+	_ "code.google.com/p/go.image/tiff"
+	_ "code.google.com/p/go.image/webp"
 	"github.com/hullerob/go.imagefile"
 	"image"
 	_ "image/gif"
