@@ -25,5 +25,5 @@ func main() {
 }
 
 func usage() {
-	os.Stderr.WriteString("usage: if2png < pic.if > pic.png\n")
+	os.Stderr.WriteString("usage: if2png\n")
 }
