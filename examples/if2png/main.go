@@ -18,6 +18,7 @@ func main() {
 		os.Exit(1)
 	}
 	err = png.Encode(os.Stdout, m)
+	os.Stdout.Sync()
 	if err != nil {
 		os.Stderr.WriteString(err.Error() + "\n")
 		os.Exit(1)
