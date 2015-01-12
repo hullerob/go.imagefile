@@ -1,6 +1,8 @@
 Go.Image File
 =============
 
+[![Build Status](https://travis-ci.org/hullerob/go.imagefile.svg?branch=master)](https://travis-ci.org/hullerob/go.imagefile)
+
 About
 -----
 
