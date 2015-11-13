@@ -53,7 +53,7 @@ func TestFFDecodeImage(t *testing.T) {
 func TestFFDecodeImageBadHeader(t *testing.T) {
 	r := bytes.NewBuffer([]byte("farbfeld\000\000\000\000\000\000\000"))
 	img, err := FFDecode(r)
-	if err == nil || err != io.ErrUnexpectedEOF {
+	if err != io.ErrUnexpectedEOF {
 		t.Errorf("returned error is wrong, expected: %#v | got: %#v", io.ErrUnexpectedEOF, err)
 	}
 	if img != nil {
@@ -64,7 +64,7 @@ func TestFFDecodeImageBadHeader(t *testing.T) {
 func TestFFDecodeImageBad(t *testing.T) {
 	r := bytes.NewBuffer([]byte("farbfeld\000\000\000\001\000\000\000\001rgb"))
 	_, err := Decode(r)
-	if err == nil || err != io.ErrUnexpectedEOF {
+	if err != io.ErrUnexpectedEOF {
 		t.Errorf("returned error is wrong, expected: %#v | got: %#v", io.ErrUnexpectedEOF, err)
 	}
 }
