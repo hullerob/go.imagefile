@@ -6,9 +6,13 @@ Go.Image File
 About
 -----
 
-This is Go implementation of [imagefile format](http://git.2f30.org/imagefile/).
+This is Go implementation of [`farbfeld` image format](http://git.2f30.org/farbfeld/).
+
+`imagefile` format was deprecated by `farbfeld`; documentation and refence
+implementation is no longer available.
 
 It uses Go's `image` interface, similar to `image/png`.
+
 
 Install
 -------
@@ -17,5 +21,9 @@ Install
 
 Usage
 -----
+
+`Encode` and `Decode` for old `imagefile`.
+
+`FFEncode` and `FFDecode` for new `farbfeld`.
 
 See `examples`.
